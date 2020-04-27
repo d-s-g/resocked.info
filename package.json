@@ -7,7 +7,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "firebase": "7.11.0",
     "next": "latest",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
@@ -16,6 +15,7 @@
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^2.1.2",
     "dotenv": "8.2.0",
+    "firebase": "^7.14.2",
     "styled-components": "^5.1.0",
     "tachyons": "^4.11.1"
   }
