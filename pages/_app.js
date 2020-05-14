@@ -1,4 +1,5 @@
 import UserProvider from "../context/userContext";
+import DbProvider from "../context/dbContext";
 import "../styles/index.css";
 
 // Only uncomment this method if you have blocking data requirements for
@@ -16,6 +17,8 @@ import "../styles/index.css";
 // Custom App to wrap it with context provider
 export default ({ Component, pageProps }) => (
   <UserProvider>
-    <Component {...pageProps} />
+    <DbProvider>
+      <Component {...pageProps} />
+    </DbProvider>
   </UserProvider>
 );

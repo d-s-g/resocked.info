@@ -1,44 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { setTimeStamp } from "../context/dbContext";
 
-const CreateRestockedItem = ({ poi, db, setIsLoading, createdBy }) => {
-  const [label, setLabel] = useState("");
-  const [day, setDay] = useState("");
-  const [votesUp, setVotesUp] = useState(0);
-  const [votesDown, setVotesDown] = useState(0);
+const UpdateRestockedItem = ({
+  id,
+  db,
+  document,
+  label,
+  day,
+  setIsLoading
+}) => {
+  const [newLabel, setNewLabel] = useState("");
+  const [newDay, setNewDay] = useState("");
 
   async function setNewRestocked(payload) {
     //send set request to firebase
     setIsLoading(true);
     db.collection("Location")
-      .doc(poi)
+      .doc(id)
       .collection("restockingTime")
-      .add(payload);
+      .doc(document)
+      .set(payload, {
+        merge: true
+      });
     setIsLoading(false);
+    //update restockedTimes state
   }
 
   //if this state gets anymore complex move to useReducer
   const handleChange = e => {
     const { name, type, value } = e.target;
     const inputValue = type === "number" ? parseFloat(value) : value;
-    return name === "label" ? setLabel(inputValue) : setDay(inputValue);
+    return name === "label" ? setNewLabel(inputValue) : setNewDay(inputValue);
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    //send request to mapbox
-    const created = setTimeStamp();
-    const payload = { label, day, createdBy, votesUp, votesDown, created };
+
+    const payload = { label: newLabel, day: newDay };
     setNewRestocked(payload);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <label>Label:</label>
-      <input type="text" name="label" onChange={handleChange}></input>
+      <input
+        type="text"
+        name="label"
+        onChange={handleChange}
+        defaultValue={label}
+      ></input>
       <label>Restocking Day</label>
-      <select name="day" onChange={handleChange} required>
+      <select name="day" onChange={handleChange} required defaultValue={day}>
         <option value="">Select a day</option>
         <option value="sunday">Sunday</option>
         <option value="monday">Monday</option>
@@ -53,8 +65,8 @@ const CreateRestockedItem = ({ poi, db, setIsLoading, createdBy }) => {
   );
 };
 
-CreateRestockedItem.propTypes = {
+UpdateRestockedItem.propTypes = {
   day: PropTypes.string
 };
 
-export default CreateRestockedItem;
+export default UpdateRestockedItem;
