@@ -1,14 +1,13 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import firebase from "../firebase/clientApp";
 
-export const UserContext = createContext();
+export const userContext = createContext();
 
 export default ({ children }) => {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true); // Helpful, to update the UI accordingly.
 
-  useEffect(() => {
-    // Listen authenticated user
+  const getUser = () => {
     const unsubscriber = firebase.auth().onAuthStateChanged(async user => {
       try {
         if (user) {
@@ -20,6 +19,7 @@ export default ({ children }) => {
         } else setUser(null);
       } catch (error) {
         // Most probably a connection error. Handle appropiately.
+        console.log("user", error);
       } finally {
         setLoadingUser(false);
       }
@@ -27,14 +27,18 @@ export default ({ children }) => {
 
     // Unsubscribe auth listener on unmount
     return () => unsubscriber();
+  };
+
+  useEffect(() => {
+    getUser();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loadingUser }}>
+    <userContext.Provider value={{ user, setUser, loadingUser }}>
       {children}
-    </UserContext.Provider>
+    </userContext.Provider>
   );
 };
 
 // Custom hook that shorhands the context!
-export const useUser = () => useContext(UserContext);
+export const useUser = () => useContext(userContext);
