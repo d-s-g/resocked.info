@@ -2,7 +2,6 @@ import Head from "next/head";
 import Link from "next/link";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { useUser } from "../context/userContext";
 import styled from "styled-components";
 
 const mapboxGeoToken = {
@@ -36,37 +35,42 @@ const Index = props => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        <input
-          type="number"
-          name="zip"
-          onChange={handleChange}
-          required
-          placeholder="Enter a zip"
-        />
-      </label>
-      <input type="submit" value="Submit" />
-      <ul>
-        {data.map(item => (
-          <li key={item.id}>
-            <Link
-              href={{
-                pathname: "/Location",
-                query: {
-                  id: item.id.replace("poi.", ""),
-                  title: item.text,
-                  address: item.properties.address
-                },
-                shallow: true
-              }}
-            >
-              <a>{item.place_name}</a>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </form>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <input
+            type="number"
+            name="zip"
+            onChange={handleChange}
+            required
+            placeholder="Enter a zip"
+          />
+        </label>
+        <input type="submit" value="Submit" />
+        <ul>
+          {data.map(item => (
+            <li key={item.id}>
+              <Link
+                href={{
+                  pathname: "/Location",
+                  query: {
+                    id: item.id.replace("poi.", ""),
+                    title: item.text,
+                    address: item.properties.address
+                  },
+                  shallow: true
+                }}
+              >
+                <a>{item.place_name}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </form>
+      <Link href="/login">
+        <a>Login</a>
+      </Link>
+    </div>
   );
 };
 
